@@ -1,0 +1,34 @@
+lookback_days: 10
+
+# Fill actor_id with the Apify Store actor you chose for each source
+# (e.g. a Telegram channel scraper, a Naver Finance board scraper).
+# run_input is passed to the actor as-is; {query} is replaced per ticker.
+exchanges:
+  HKEX:
+    tickers:
+      - {symbol: "0700.HK", name: "Tencent", keywords: ["騰訊", "Tencent", "0700"]}
+      - {symbol: "9988.HK", name: "Alibaba", keywords: ["阿里", "Alibaba", "9988"]}
+      - {symbol: "3690.HK", name: "Meituan", keywords: ["美團", "Meituan", "3690"]}
+      - {symbol: "1810.HK", name: "Xiaomi", keywords: ["小米", "Xiaomi", "1810"]}
+      - {symbol: "0005.HK", name: "HSBC", keywords: ["匯豐", "HSBC", "0005"]}
+    sources:
+      - name: lihkg
+        actor_id: "REPLACE_WITH_ACTOR_ID"
+        run_input: {searchQuery: "{query}", maxItems: 200}
+      - name: telegram
+        actor_id: "REPLACE_WITH_ACTOR_ID"
+        run_input: {query: "{query}", maxItems: 200}
+  KRX:
+    tickers:
+      - {symbol: "005930.KS", name: "Samsung Electronics", keywords: ["삼성전자", "005930"]}
+      - {symbol: "000660.KS", name: "SK Hynix", keywords: ["SK하이닉스", "000660"]}
+      - {symbol: "035420.KS", name: "NAVER", keywords: ["네이버", "035420"]}
+      - {symbol: "035720.KS", name: "Kakao", keywords: ["카카오", "035720"]}
+      - {symbol: "005380.KS", name: "Hyundai Motor", keywords: ["현대차", "005380"]}
+    sources:
+      - name: naver_finance
+        actor_id: "REPLACE_WITH_ACTOR_ID"
+        run_input: {stockCode: "{code}", maxItems: 200}
+      - name: telegram
+        actor_id: "REPLACE_WITH_ACTOR_ID"
+        run_input: {query: "{query}", maxItems: 200}
