@@ -1,5 +1,6 @@
 """Multilingual sentiment (works for Cantonese/Chinese, Korean, English)."""
 import numpy as np
+import pandas as pd
 from transformers import pipeline
 
 MODEL = "cardiffnlp/twitter-xlm-roberta-base-sentiment"
