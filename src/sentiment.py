@@ -28,13 +28,11 @@ def score_texts(texts, batch_size=32):
 
 def engagement_weight(df):
     """Posts with more reach count more (log-scaled)."""
-    if df.empty:
+    if df is None or len(df) == 0:
         return np.array([])
-    reach = df[["likes", "reposts", "views", "followers"]].fillna(0)
-    score = (
-        reach["likes"].clip(lower=0)
-        + 2 * reach["reposts"].clip(lower=0)
-        + 0.01 * reach["views"].clip(lower=0)
-        + 0.001 * reach["followers"].clip(lower=0)
-    )
-    return 1.0 + np.log1p(score)
+    likes = pd.to_numeric(df.get("likes", 0), errors="coerce").fillna(0).clip(lower=0)
+    reposts = pd.to_numeric(df.get("reposts", 0), errors="coerce").fillna(0).clip(lower=0)
+    views = pd.to_numeric(df.get("views", 0), errors="coerce").fillna(0).clip(lower=0)
+    followers = pd.to_numeric(df.get("followers", 0), errors="coerce").fillna(0).clip(lower=0)
+    score = likes + 2 * reposts + 0.01 * views + 0.001 * followers
+    return 1.0 + np.log1p(score.to_numpy(dtype=float))

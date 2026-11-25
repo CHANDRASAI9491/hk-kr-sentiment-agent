@@ -28,12 +28,21 @@ def main():
             print(f"[{ex}] {sym}")
             posts = pd.concat([scrape(ex, tk, src, lookback) for src in ex_cfg["sources"]], ignore_index=True)
             news = fetch_news(ex, tk, lookback)
-            if not posts.empty:
+            if (posts.empty or len(posts) == 0) and os.path.exists(f"data/{sym}_posts.csv"):
+                print(f"  Using cached data/{sym}_posts.csv")
+                posts = pd.read_csv(f"data/{sym}_posts.csv")
+            if (news.empty or len(news) == 0) and os.path.exists(f"data/{sym}_news.csv"):
+                print(f"  Using cached data/{sym}_news.csv")
+                news = pd.read_csv(f"data/{sym}_news.csv")
+
+            if not posts.empty and "sentiment" not in posts.columns:
                 posts["sentiment"] = score_texts(posts["text"].tolist())
-            if not news.empty:
+            if not news.empty and "sentiment" not in news.columns:
                 news["sentiment"] = score_texts(news["text"].tolist())
-            posts.to_csv(f"data/{sym}_posts.csv", index=False)
-            news.to_csv(f"data/{sym}_news.csv", index=False)
+            if not posts.empty:
+                posts.to_csv(f"data/{sym}_posts.csv", index=False)
+            if not news.empty:
+                news.to_csv(f"data/{sym}_news.csv", index=False)
 
             prices = get_prices(sym)
             sent = daily_sentiment(posts, news)

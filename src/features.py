@@ -18,7 +18,7 @@ def daily_sentiment(posts, news):
     if not frames:
         return pd.DataFrame()
     allp = pd.concat(frames)
-    allp["date"] = allp["timestamp"].dt.normalize()
+    allp["date"] = pd.to_datetime(allp["timestamp"], utc=True).dt.normalize()
     g = allp.groupby(["ticker", "date"])
     def _agg(d):
         w = d["w"].values
