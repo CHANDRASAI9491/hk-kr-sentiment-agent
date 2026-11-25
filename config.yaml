@@ -1,34 +1,35 @@
 lookback_days: 10
 
-# Fill actor_id with the Apify Store actor you chose for each source
-# (e.g. a Telegram channel scraper, a Naver Finance board scraper).
-# run_input is passed to the actor as-is; {query} is replaced per ticker.
 exchanges:
   HKEX:
     tickers:
-      - {symbol: "0700.HK", name: "Tencent", keywords: ["騰訊", "Tencent", "0700"]}
-      - {symbol: "9988.HK", name: "Alibaba", keywords: ["阿里", "Alibaba", "9988"]}
-      - {symbol: "3690.HK", name: "Meituan", keywords: ["美團", "Meituan", "3690"]}
-      - {symbol: "1810.HK", name: "Xiaomi", keywords: ["小米", "Xiaomi", "1810"]}
-      - {symbol: "0005.HK", name: "HSBC", keywords: ["匯豐", "HSBC", "0005"]}
+      - {symbol: "0700.HK", name: "Tencent", keywords: ["騰訊", "Tencent", "0700"], telegram_keywords: ["텐센트"]}
+      - {symbol: "9988.HK", name: "Alibaba", keywords: ["阿里", "Alibaba", "9988"], telegram_keywords: ["알리바바"]}
+      - {symbol: "3690.HK", name: "Meituan", keywords: ["美團", "Meituan", "3690"], telegram_keywords: ["메이퇀", "美团"]}
+      - {symbol: "1810.HK", name: "Xiaomi", keywords: ["小米", "Xiaomi", "1810"], telegram_keywords: ["샤오미"]}
+      - {symbol: "0005.HK", name: "HSBC", keywords: ["匯豐", "HSBC", "0005"], telegram_keywords: ["汇丰"]}
     sources:
       - name: lihkg
-        actor_id: "REPLACE_WITH_ACTOR_ID"
-        run_input: {searchQuery: "{query}", maxItems: 200}
+        actor_id: "claude_code_reviewer/lihkg-scraper-en"
+        max_items: 40
       - name: telegram
-        actor_id: "REPLACE_WITH_ACTOR_ID"
-        run_input: {query: "{query}", maxItems: 200}
+        actor_id: "automation-lab/telegram-scraper"
+        # Public channels covering HK / China equities
+        channels: ["chinadagudong", "KBAsia", "HANAchina", "EMchina"]
+        max_items: 300
   KRX:
     tickers:
-      - {symbol: "005930.KS", name: "Samsung Electronics", keywords: ["삼성전자", "005930"]}
-      - {symbol: "000660.KS", name: "SK Hynix", keywords: ["SK하이닉스", "000660"]}
-      - {symbol: "035420.KS", name: "NAVER", keywords: ["네이버", "035420"]}
+      - {symbol: "005930.KS", name: "Samsung Electronics", keywords: ["삼성전자", "005930", "삼전"]}
+      - {symbol: "000660.KS", name: "SK Hynix", keywords: ["SK하이닉스", "하이닉스", "000660"]}
+      - {symbol: "035420.KS", name: "NAVER", keywords: ["네이버", "NAVER", "035420"]}
       - {symbol: "035720.KS", name: "Kakao", keywords: ["카카오", "035720"]}
-      - {symbol: "005380.KS", name: "Hyundai Motor", keywords: ["현대차", "005380"]}
+      - {symbol: "005380.KS", name: "Hyundai Motor", keywords: ["현대차", "현대자동차", "005380"]}
     sources:
       - name: naver_finance
-        actor_id: "REPLACE_WITH_ACTOR_ID"
-        run_input: {stockCode: "{code}", maxItems: 200}
+        actor_id: "hgservices/naver-stock-discussion-scraper"
+        max_items: 150
       - name: telegram
-        actor_id: "REPLACE_WITH_ACTOR_ID"
-        run_input: {query: "{query}", maxItems: 200}
+        actor_id: "automation-lab/telegram-scraper"
+        # Large public Korean stock-news channels
+        channels: ["FastStockNews", "corevalue", "YeouidoStory2", "stockhub_krnews"]
+        max_items: 300

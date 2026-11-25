@@ -60,7 +60,9 @@ def main():
 
     summary = pd.DataFrame(rows)
     summary.to_csv("output/summary.csv", index=False)
-    pd.concat(backtests).to_csv("output/backtest.csv", index=False)
+    valid_bt = [b for b in backtests if not b.empty]
+    if valid_bt:
+        pd.concat(valid_bt).to_csv("output/backtest.csv", index=False)
     print(summary.to_string(index=False))
     print("Report:", build_report(summary))
 

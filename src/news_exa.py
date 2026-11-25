@@ -24,5 +24,6 @@ def fetch_news(exchange, ticker, lookback_days, num_results=10):
     } for r in res.results]
     df = pd.DataFrame(rows)
     if not df.empty:
-        df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True, errors="coerce")
+        from src.scrape_social import to_utc
+        df["timestamp"] = df["timestamp"].map(to_utc)
     return df

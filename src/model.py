@@ -21,7 +21,7 @@ def walk_forward(df, min_train=40):
         preds.append({"date": test.index[0], "pred_ret": p, "true_ret": float(test["target_ret"].iloc[0])})
     res = pd.DataFrame(preds)
     if res.empty:
-        return res, {}
+        return res, {"oos_days": 0, "direction_hit_rate": 0.0, "mae": 0.0, "naive_mae": 0.0}
     hit = (np.sign(res["pred_ret"]) == np.sign(res["true_ret"])).mean()
     mae = (res["pred_ret"] - res["true_ret"]).abs().mean()
     naive_mae = res["true_ret"].abs().mean()  # baseline: predict no change
@@ -33,6 +33,9 @@ def predict_next(df):
     """Fit on all labelled days, predict the next close from the latest row."""
     data = df.dropna(subset=FEATURES)
     train = data.dropna(subset=["target_ret"])
+    if train.empty or data.empty:
+        close = float(df["close"].iloc[-1]) if not df.empty and "close" in df else 0.0
+        return {"current_price": round(close, 2), "pred_ret": 0.0, "pred_price_n1": round(close, 2), "direction": "UP"}
     m = _model().fit(train[FEATURES], train["target_ret"])
     last = data.iloc[[-1]]
     pred_ret = float(m.predict(last[FEATURES])[0])

@@ -20,12 +20,17 @@ def daily_sentiment(posts, news):
     allp = pd.concat(frames)
     allp["date"] = allp["timestamp"].dt.normalize()
     g = allp.groupby(["ticker", "date"])
-    out = g.apply(lambda d: pd.Series({
-        "sent_w": np.average(d["sentiment"], weights=d["w"]),
-        "sent_mean": d["sentiment"].mean(),
-        "mentions": len(d),
-        "bull_ratio": (d["sentiment"] > 0.2).mean(),
-    }), include_groups=False).reset_index()
+    def _agg(d):
+        w = d["w"].values
+        w_sum = np.sum(w)
+        sent_w = np.average(d["sentiment"], weights=w) if w_sum > 0 else d["sentiment"].mean()
+        return pd.Series({
+            "sent_w": float(sent_w),
+            "sent_mean": float(d["sentiment"].mean()),
+            "mentions": len(d),
+            "bull_ratio": float((d["sentiment"] > 0.2).mean()),
+        })
+    out = g.apply(_agg, include_groups=False).reset_index()
     return out
 
 

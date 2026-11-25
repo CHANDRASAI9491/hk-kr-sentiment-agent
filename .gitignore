@@ -1,5 +1,8 @@
 .env
 data/
 output/
+logs/
+report.html
+hk-kr-sentiment-agent/
 __pycache__/
 *.pyc
